@@ -200,49 +200,41 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 }
 
 LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
-    HWND hwndButton;
-    switch (message) {                 /* Handles all Windows Messages */
-        case WM_COMMAND:{
-              if(((HWND)lParam) && (HIWORD(wParam) == BN_CLICKED)){
-                int iMID;
-                iMID = LOWORD(wParam);
-                switch(iMID){
-                  case IDBUTTON:{
-						string resetMessage=tryResetAttribute();
-						UINT messageType=MB_OK;
-						if (!success)
-							messageType|=MB_ICONEXCLAMATION;
-                       MessageBox(hwnd, (LPCTSTR)resetMessage.c_str(), "Message",messageType);
-                       break;
-                       }
-                  default:
-                       break;
-                }
-              }
-              break;
-            }
-        case WM_DESTROY:{
+	HWND hwndButton;
+	switch (message) {
+		case WM_COMMAND:
+			if(((HWND)lParam)&&(HIWORD(wParam)==BN_CLICKED)){
+				int iMID;
+				iMID = LOWORD(wParam);
+				if (iMID==IDBUTTON){
+					string resetMessage=tryResetAttribute();
+					UINT messageType=MB_OK;
+					if (!success)
+						messageType|=MB_ICONEXCLAMATION;
+					MessageBox(hwnd, (LPCTSTR)resetMessage.c_str(), "Message",messageType);
+				}
+			}
+			break;
+        case WM_DESTROY:
               PostQuitMessage (0);       /* send a WM_QUIT to Message Queue, to shut off program */
               break;
-             }
-		        case WM_CREATE:{
-               hwndButton = CreateWindowEx(0,                    /* more or ''extended'' styles */
-                         TEXT("BUTTON"),                         /* GUI ''class'' to create */
-                         TEXT("reset"),                        /* GUI caption */
-                         WS_CHILD|WS_VISIBLE|BS_DEFPUSHBUTTON,   /* control styles separated by | */
-                         10,                                     /* LEFT POSITION (Position from left) */
-                         10,                                     /* TOP POSITION  (Position from Top) */
-                         150,                                    /* WIDTH OF CONTROL */
-                         30,                                     /* HEIGHT OF CONTROL */
-                         hwnd,                                   /* Parent window handle */
-                         (HMENU)IDBUTTON,                        /* control''s ID for WM_COMMAND */
-                         g_hInst,                                /* application instance */
-                         NULL);
-               break;
-             }
-        default:                      /* messages that we will not process */
-            return DefWindowProc (hwnd, message, wParam, lParam);
-    }
-
-    return 0;
+		case WM_CREATE:
+			hwndButton=CreateWindowEx(0,                    /* more or ''extended'' styles */
+							TEXT("BUTTON"),                         /* GUI ''class'' to create */
+							TEXT("reset"),                        /* GUI caption */
+							WS_CHILD|WS_VISIBLE|BS_DEFPUSHBUTTON,   /* control styles separated by | */
+							10,                                     /* LEFT POSITION (Position from left) */
+							10,                                     /* TOP POSITION  (Position from Top) */
+							150,                                    /* WIDTH OF CONTROL */
+							30,                                     /* HEIGHT OF CONTROL */
+							hwnd,                                   /* Parent window handle */
+							(HMENU)IDBUTTON,                        /* control''s ID for WM_COMMAND */
+							g_hInst,                                /* application instance */
+							NULL
+						 );
+			break;
+		default: 
+			return DefWindowProc(hwnd,message,wParam,lParam);
+	}
+	return 0;
 }
