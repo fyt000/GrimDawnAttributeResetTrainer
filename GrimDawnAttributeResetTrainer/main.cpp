@@ -21,13 +21,13 @@ LRESULT CALLBACK WindowProcedure(HWND,UINT,WPARAM,LPARAM);
 
 #define IDBUTTON 102
 
+DWORD baseAddr=0x0025a2bc;
+DWORD physiqueOffsets[]={0x68,0x980,0x0,0x8,0x0};
+DWORD cunningOffsets[]={0x68,0x980,0x8,0x8,0x0};
+DWORD spiritOffsets[]={0x68,0x980,0x4,0x8,0x0};
+DWORD attributeOffsets[]={0x68,0xdd8};
 
-DWORD physiqueOffsets[]={0x68,0x964,0x0,0x8,0x0};
-DWORD cunningOffsets[]={0x68,0x964,0x8,0x8,0x0};
-DWORD spiritOffsets[]={0x68,0x964,0x4,0x8,0x0};
-DWORD attributeOffsets[]={0x68,0xdac};
-
-char szClassName[]="GD Attribute Resetter for B27H2";
+char szClassName[]="GD Attribute Resetter for B28";
 HINSTANCE g_hInst;
 
 
@@ -108,10 +108,10 @@ string tryResetAttribute(){
 	float cVal;
 	float sVal;
 	int aVal;
-	DWORD pAddr=getFinalAddress(procID,procHandle,0x230230,physiqueOffsets,5);
-	DWORD cAddr=getFinalAddress(procID,procHandle,0x230230,cunningOffsets,5);
-	DWORD sAddr=getFinalAddress(procID,procHandle,0x230230,spiritOffsets,5);
-	DWORD aAddr=getFinalAddress(procID,procHandle,0x230230,attributeOffsets,2);
+	DWORD pAddr=getFinalAddress(procID,procHandle,baseAddr,physiqueOffsets,5);
+	DWORD cAddr=getFinalAddress(procID,procHandle,baseAddr,cunningOffsets,5);
+	DWORD sAddr=getFinalAddress(procID,procHandle,baseAddr,spiritOffsets,5);
+	DWORD aAddr=getFinalAddress(procID,procHandle,baseAddr,attributeOffsets,2);
 	if (memError){
 		CloseHandle(procHandle);
 		return "Failed to retrieve memory.\nMake sure you have logged into your character.\nOtherwise, please contact the author.";
