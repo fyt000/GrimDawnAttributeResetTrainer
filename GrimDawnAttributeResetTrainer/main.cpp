@@ -21,13 +21,14 @@ LRESULT CALLBACK WindowProcedure(HWND,UINT,WPARAM,LPARAM);
 
 #define IDBUTTON 102
 
-DWORD baseAddr=0x0025a2bc;
-DWORD physiqueOffsets[]={0x68,0x980,0x0,0x8,0x0};
-DWORD cunningOffsets[]={0x68,0x980,0x8,0x8,0x0};
-DWORD spiritOffsets[]={0x68,0x980,0x4,0x8,0x0};
-DWORD attributeOffsets[]={0x68,0xdd8};
+DWORD baseAddr=0x00225830;
+//DWORD testOffsets[]={0x60,0x504,0x39c,0x24,0x7f0,0x0,0x8,0x0};
+DWORD physiqueOffsets[]={0x60,0x89c,0x0,0x8,0x0};
+DWORD cunningOffsets[]={0x60,0x89c,0x8,0x8,0x0};
+DWORD spiritOffsets[]={0x60,0x89c,0x4,0x8,0x0};
+DWORD attributeOffsets[]={0x60,0xce4};
 
-char szClassName[]="GD Attribute Resetter for B28";
+char szClassName[]="GD Attribute Resetter for B29H2";
 HINSTANCE g_hInst;
 
 
@@ -49,7 +50,7 @@ DWORD getFinalAddress(DWORD procID,HANDLE procHandle,DWORD baseAddress, DWORD of
         }
     }
 
-    CloseHandle(hSnap);
+    //CloseHandle(hSnap);
 
 	DWORD ptr=0;
 	DWORD memPtr=0;
@@ -72,6 +73,59 @@ DWORD getFinalAddress(DWORD procID,HANDLE procHandle,DWORD baseAddress, DWORD of
 	}
 	return ptr;
 }
+
+//use this to find the offset..since only the 2nd offset changes, this saves the time to do it manually
+void test(DWORD procID,HANDLE procHandle,DWORD baseAddress,DWORD offsets[],int offsetSize){
+
+	BYTE* exeBaseAddress=0;
+
+	void* hSnap=0;
+	MODULEENTRY32 Mod32={0};
+
+	hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE,procID);
+
+	Mod32.dwSize = sizeof(MODULEENTRY32);
+	while (Module32Next(hSnap,&Mod32)){
+		if (!_stricmp("Grim Dawn.exe",Mod32.szModule)){
+			CloseHandle(hSnap);
+			exeBaseAddress=Mod32.modBaseAddr;
+			break;
+		}
+	}
+
+	CloseHandle(hSnap);
+
+	
+	for (DWORD j=0;j<0xfff;j++){
+		int ok=1;
+		DWORD ptr=0;
+		DWORD memPtr=0;
+		//cout<<hex<<(void*)exeBaseAddress<<endl;
+		if (!ReadProcessMemory(procHandle,(void*)(exeBaseAddress+baseAddress),&memPtr,4,NULL)){
+			//cout<<"failed to read memory "<<dec<<GetLastError()<<endl;
+			//exit(0);
+			return;
+		}
+		offsets[1]=j; //only change the 2nd offset
+		for (int i=0;i<offsetSize;i++){
+			ptr=memPtr+offsets[i];
+			//cout<<"Accessing: "<<hex<<ptr<<endl;
+			if (!ReadProcessMemory(procHandle,(void*)ptr,&memPtr,4,NULL)){
+				//memError=1;
+				ok=0;
+				break;
+			}
+		}
+		if (ok){
+			float val;
+			ReadProcessMemory(procHandle,(void*)ptr,&val,4,NULL);
+			cout<<hex<<j<<" "<<dec<<val<<endl;
+		}
+
+	}
+
+}
+
 
 
 string tryResetAttribute(){
@@ -103,7 +157,8 @@ string tryResetAttribute(){
 		return "Grim Dawn not running.";
 	}
 
-
+	//test(procID,procHandle,baseAddr,physiqueOffsets,5);
+	//return "test";
 	float pVal;
 	float cVal;
 	float sVal;
@@ -147,7 +202,12 @@ string tryResetAttribute(){
 	return "Your attribute points has been reset.\nPlease reload your character to recalculate your HP.";
 
 }
-
+/*
+int main(){
+	tryResetAttribute();
+	return 0;
+}
+*/
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,int nShowCmd){
 	HWND hwnd;               
 	MSG messages;           
