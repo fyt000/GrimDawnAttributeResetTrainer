@@ -21,14 +21,14 @@ LRESULT CALLBACK WindowProcedure(HWND,UINT,WPARAM,LPARAM);
 
 #define IDBUTTON 102
 
-DWORD baseAddr=0x00226830;
+DWORD baseAddr=0x00235830;
 //DWORD testOffsets[]={0x60,0x504,0x39c,0x24,0x7f0,0x0,0x8,0x0};
-DWORD physiqueOffsets[]={0x60,0x89c,0x0,0x8,0x0};
-DWORD cunningOffsets[]={0x60,0x89c,0x8,0x8,0x0};
-DWORD spiritOffsets[]={0x60,0x89c,0x4,0x8,0x0};
-DWORD attributeOffsets[]={0x60,0xce4};
+DWORD physiqueOffsets[]={0x5c,0x8ac,0x0,0x8,0x0};
+DWORD cunningOffsets[]={0x5c,0x8ac,0x8,0x8,0x0};
+DWORD spiritOffsets[]={0x5c,0x8ac,0x4,0x8,0x0};
+DWORD attributeOffsets[]={0x5c,0xcf4};
 
-char szClassName[]="GD Attribute Resetter for B30";
+char szClassName[]="GD Attribute Resetter for v1.0.0.0";
 HINSTANCE g_hInst;
 
 
@@ -237,7 +237,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	hwnd=CreateWindowEx (
 			0, 
 			szClassName,
-			"GD Attribute Resetter for B27H2",
+			szClassName,
 			WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX,
 			CW_USEDEFAULT, //default positions
 			CW_USEDEFAULT,
